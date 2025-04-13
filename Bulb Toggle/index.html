@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blub Implementation</title>
+
+    <style>
+        * {
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --text: black;
+            --bg: white;
+            --border: blue;
+        }
+
+        .dark {
+            --text: white;
+            --bg: black;
+            background-color: var(--bg);
+            color: var(--text);
+            --select: black;
+            --border: red;
+        }
+
+        ::selection {
+            color: var(--select);
+            --selectBg: grey;
+            background: var(--selectBg);
+        }
+
+        #Button {
+            border: none;
+            background: var(--bg);
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            border-top: 2px solid var(--border);
+        }
+
+
+
+        #task,
+        #problem {
+            margin-top: 10px;
+            border-bottom: 2px solid var(--border);
+            border-top: 2px solid var(--border);
+        }
+
+
+        h2 {
+            animation-timing-function: ease-in-out;
+            animation-name: glow;
+            animation-iteration-count: infinite;
+            animation-direction: normal;
+            animation-duration: 5s;
+        }
+
+        #bulb {
+            transition: all ease-in-out 2s;
+        }
+
+        #bulb:hover {
+            transform: rotateZ(360deg);
+        }
+
+
+
+        @keyframes glow {
+            0% {
+                color: magenta;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+            20% {
+                color: cyan;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+            40% {
+                color: lime;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+            60% {
+                color: yellow;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+            80% {
+                color: orange;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+            100% {
+                color: red;
+                filter: drop-shadow(2px 2px 10px var(--text));
+                text-shadow: 1px 1px 1px var(--text), 3px 3px 2px yellow;
+            }
+
+        }
+    </style>
+
+
+
+
+</head>
+
+<body class="dark">
+    <div class="container">
+
+        <!-- 🚧 TASK DESCRIPTION 🚧 -->
+        <section id="task">
+            <h2>📝 Task</h2>
+            <p>
+                Create a webpage featuring a <strong>light bulb</strong> image or visual representation.<br>
+                Include a <strong>button</strong> that allows the user to <em>toggle</em> the bulb between ON and OFF
+                states.
+            </p>
+        </section>
+
+        <!-- 🧠 PROBLEM TO SOLVE -->
+        <section id="problem">
+            <h2>🧩 Problem / Challenge</h2>
+            <ul>
+                <li>💡 When the bulb is <strong>on</strong>:
+                    <ul>
+                        <li>It should appear <strong>yellow or gold</strong>.</li>
+                        <li>It should have a <strong>glow effect</strong> (like a soft light).</li>
+                    </ul>
+                </li>
+                <li>🕯️ When the bulb is <strong>off</strong>:
+                    <ul>
+                        <li>It should appear <strong>gray</strong> or dull.</li>
+                        <li>There should be <strong>no glow</strong>.</li>
+                    </ul>
+                </li>
+                <li>🔘 The <strong>button text</strong> should change depending on the state:
+                    <ul>
+                        <li><code>"Turn On"</code> if the bulb is off.</li>
+                        <li><code>"Turn Off"</code> if the bulb is on.</li>
+                    </ul>
+                </li>
+                <li>🌑 Apply a <strong>dark mode</strong> to the entire page when the bulb is off.</li>
+            </ul>
+        </section>
+
+        <br><br><br>
+        <!-- 💡 BULB PLACEHOLDER -->
+        <div>
+            <label for="blub">the bulb:</label>
+            <br>
+            <img id="bulb" on="false" src="./Light-Bulb-isolated-on-transparent-background-PNG.png" alt="bulbGlow"
+                height="100px">
+        </div>
+        <!-- 🔘 TOGGLE BUTTON -->
+        <button id="Button">On</button>
+
+        <script>
+            let bulbToggle = () => {
+                let img = document.querySelector("img");
+                let body = document.querySelector("body");
+                let button = document.querySelector("#Button");
+                let on = false;
+                let bulbs = {
+                    false: "./Light-bulb-on-transparent-background-PNG.png",
+                    true: "./Light-Bulb-isolated-on-transparent-background-PNG.png"
+                }
+                button.addEventListener("click", () => { on = on ? false : true; img.setAttribute("src", bulbs[on]); button.innerHTML = on ? "OFF" : "ON"; body.classList.toggle("dark"); })
+                img.addEventListener("click", () => { on = on ? false : true; img.setAttribute("src", bulbs[on]); button.innerHTML = on ? "OFF" : "ON"; body.classList.toggle("dark"); })
+            }
+
+
+            bulbToggle()
+        </script>
+
+
+
+</body>
+
+</html>
