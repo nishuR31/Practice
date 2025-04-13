@@ -171,8 +171,8 @@
                 let button = document.querySelector("#Button");
                 let on = false;
                 let bulbs = {
-                    false: "./Light-bulb-on-transparent-background-PNG.png",
-                    true: "./Light-Bulb-isolated-on-transparent-background-PNG.png"
+                    false: "./BulbOff.png",
+                    true: "./BulbOn.png"
                 }
                 button.addEventListener("click", () => { on = on ? false : true; img.setAttribute("src", bulbs[on]); button.innerHTML = on ? "OFF" : "ON"; body.classList.toggle("dark"); })
                 img.addEventListener("click", () => { on = on ? false : true; img.setAttribute("src", bulbs[on]); button.innerHTML = on ? "OFF" : "ON"; body.classList.toggle("dark"); })
