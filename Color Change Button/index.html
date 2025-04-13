@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Change My Color!</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin-top: 10px;
+            padding: 0;
+            border-radius: 5px;
+            caret-color: red;
+        }
+
+        h1 {
+            padding: 10px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+
+        p {
+            padding: 10px;
+            text-align: center;
+            text-transform: capitalize;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .btn {
+            border: none;
+            padding: 5px;
+            box-shadow: 3px 3px 3px black;
+            transition: all ease-in-out 1s;
+        }
+
+        .btn:active {
+            border: none;
+            padding: 5px;
+            box-shadow: 3px 3px 3px inset black, 3px 3px 3px inset black;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0px);
+            }
+
+            10% {
+                transform: translateX(5px);
+            }
+
+            20% {
+                transform: translateX(-10px);
+            }
+
+            30% {
+                transform: translateX(15px);
+            }
+
+            40% {
+                transform: translateX(-20px);
+            }
+
+            50% {
+                transform: translateX(25px);
+            }
+
+            60% {
+                transform: translateX(-20px);
+            }
+
+            70% {
+                transform: translateX(15px);
+            }
+
+            80% {
+                transform: translateX(-10px);
+            }
+
+            90% {
+                transform: translateX(5px);
+            }
+
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: space-evenly;
+            justify-items: center;
+            align-self: center;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        #colorValue {
+            border: none;
+            padding: 5px;
+            box-shadow: 3px 3px 3px inset black, 3px 3px 3px inset black;
+        }
+
+        #colorValue::placeholder {
+            color: red;
+        }
+
+        #utils {
+            display: flex;
+            justify-content: space-evenly;
+            justify-items: center;
+            align-items: center;
+            align-self: center;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+
+        #info {
+            display: flex;
+            justify-content: space-evenly;
+            justify-items: center;
+            align-items: center;
+            align-self: center;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="text" contenteditable="true">Change My Color!, and I am editable too...</h1>
+    <p>Just click the <button class="btn">buttons</button> below!</p>
+    <p>You can also choose more colours from selector and custom colour buttons!</p>
+
+    <div id="buttons">
+        <button class="btn" value="red">Red</button>
+        <button class="btn" value="green">Green</button>
+        <button class="btn" value="blue">Blue</button>
+        <button class="btn" value="purple">Purple</button>
+        <button class="btn" value="orange">Orange</button>
+        <button class="btn" value="grey">Grey</button>
+        <button class="btn" value="cyan">Cyan</button>
+        <button class="btn" value="yellow">Yellow</button>
+    </div>
+    <br>
+    <br>
+    <div id="utils">
+
+        <button class="btn" id="addButton">Add button</button>
+        <div>
+            <label for="color">Choose Color:</label>
+            <input id="color" type="color" value="" />
+        </div>
+        <input id="colorValue" type="text" placeholder="Dont manually type invalid color" value="">
+
+        <button class="btn" id="resetButton">Reset</button>
+    </div>
+
+    <div id="info"></div>
+
+
+
+    <script>
+        function color() {
+            let addButton = document.querySelector("#addButton");
+            let info = document.querySelector("#info");
+            let resetButton = document.querySelector("#resetButton");
+            let color = document.querySelector("#color");
+            let colorValue = document.querySelector("#colorValue");
+            let text = document.querySelector("#text");
+            let buttons = document.querySelector("#buttons")
+            buttons.addEventListener("click", (event) => { text.style.color = event.target.value; text.style.borderBottom = `3px double ${event.target.value}`; text.style.animation = " shake 2s ease-in-out 0s infinite"; setTimeout(() => { text.style.animation = ""; }, 2000) });
+            color.addEventListener("change", (event) => { colorValue.value = event.target.value; })
+            resetButton.addEventListener("click", () => { text.style.color = "#000000"; colorValue.value = ""; text.style.borderBottomColor = "black"; text.style.animation = " shake 2s ease-in-out 0s infinite"; setTimeout(() => { text.style.animation = ""; }, 2000) })
+
+            addButton.addEventListener("click", () => {
+
+                if (!colorValue.value) {
+                    console.log("color value needed"); info.innerHTML = "<h3  style='margin-top:10px;padding:10px 3px 10px 3px ; width:fit-content;box-shadow: 3px 3px 4px red;background-color: rgba(255, 0, 0, 0.5);'> Please select color before adding button</h3>"; setTimeout(() => { console.log("time end"); info.innerHTML = ""; }, 1500); return;
+                }
+                console.log("button added");
+                let newButton = document.createElement("button");
+                newButton.setAttribute("id", colorValue.value);
+                newButton.setAttribute("value", colorValue.value);
+                newButton.setAttribute("class", "btn");
+                newButton.style.backgroundColor = newButton.getAttribute("id");
+                newButton.innerHTML = newButton.getAttribute("id");
+                buttons.appendChild(newButton);
+            });
+
+        }
+
+        color();
+    </script>
+</body>
+
+</html>
