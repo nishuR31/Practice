@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dark Glass Task Manager</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            transition: all 0.5s ease-in-out;
+
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background: radial-gradient(circle at top, #929191, #000000);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.6);
+            border: 1px solid black;
+        }
+
+
+        .container:hover {
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.6) inset, -5px -5px 5px rgba(0, 0, 0, 0.6) inset;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #eee;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .input-section input {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 12px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            caret-color: red;
+        }
+
+        .input-section button {
+            padding: 0.7rem 1.2rem;
+            background-color: #6c63ff;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        .input-section button:active {
+            background-color: #3326e7;
+
+            box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6) inset, -3px -3px 3px rgba(0, 0, 0, 0.6) inset;
+        }
+
+        .input-section button:hover {
+            background-color: white;
+            color: #6c63ff;
+
+        }
+
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .stats:hover {
+            color: rgba(0, 255, 0, 0.8);
+        }
+
+        .no-tasks {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            margin-bottom: 1rem;
+        }
+
+
+        .no-tasks:hover {
+            color: rgba(225, 255, 255, 0.8);
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            padding: 0.8rem;
+            border-radius: 12px;
+            margin-bottom: 0.6rem;
+        }
+
+        .task-list li:hover {
+            background: radial-gradient(circle, #000000, #151515, #303030);
+        }
+
+
+
+        .checkbox {
+            transform: scale(1.2);
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .taskText {
+            flex: 1;
+            margin-left: 0.5rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .taskText.completed {
+            text-decoration: line-through;
+            color: red;
+        }
+
+        .taskText.edited {
+            color: #f39c12;
+            font-style: italic;
+        }
+
+        .timestamp {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin: 0 0.5rem;
+            white-space: nowrap;
+        }
+
+        .editButton,
+        .delButton {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .editButton:hover {
+            color: #1493e7;
+        }
+
+        .delButton:hover {
+            color: #e7311c;
+        }
+
+        @media (max-width: 500px) {
+            .input-section {
+                flex-direction: column;
+            }
+
+            .input-section input,
+            .input-section button {
+                width: 100%;
+            }
+
+            .task-list li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+
+            .timestamp {
+                margin-top: 0.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body tabindex="0">
+    <div class="container">
+        <h1>📝 Task Manager</h1>
+
+        <div class="input-section">
+            <input type="text" id="input" placeholder="Add a new task..." />
+            <button id="btn">Add</button>
+        </div>
+
+        <div id="stats" class="stats">
+            <span>Total Tasks: <strong id="totalCount">0</strong></span>
+            <span>Completed: <strong id="completedCount">0</strong></span>
+        </div>
+
+        <p id="noTasks" class="no-tasks">No tasks yet. Add one above!</p>
+
+        <ul id="ul" class="task-list">
+            <!-- Task items will go here -->
+        </ul>
+    </div>
+
+    <script>
+        const input = document.querySelector("#input");
+        const totalCount = document.querySelector("#totalCount");
+        const completedCount = document.querySelector("#completedCount");
+        const ul = document.querySelector("#ul");
+        const noTasks = document.querySelector("#noTasks");
+        const btn = document.querySelector("#btn");
+
+        let edit = null;
+
+        function updateStats() {
+            const completed = ul.querySelectorAll("input[type='checkbox']:checked").length;
+            totalCount.textContent = ul.children.length;
+            completedCount.textContent = completed;
+            noTasks.style.display = ul.children.length ? "none" : "block";
+        }
+
+        function createTaskElement(taskText) {
+            const li = document.createElement("li");
+            li.innerHTML = `
+        <input type="checkbox" class="checkbox" />
+        <span class="taskText">${taskText}</span>
+        <span class="timestamp">${new Date().toLocaleString()}</span>
+        <button class="editButton">Edit</button>
+        <button class="delButton">Delete</button>
+      `;
+            return li;
+        }
+
+        function addTask() {
+            const taskText = input.value.trim();
+            if (!taskText) {
+                let warning = createTaskElement("⚠️ Please enter a task!");
+                ul.appendChild(warning);
+                setTimeout(() => warning.remove(), 1200);
+                return;
+            }
+
+            if (edit) {
+                const span = edit.querySelector(".taskText");
+                span.textContent = taskText;
+                span.classList.add("edited");
+                btn.textContent = "Add";
+                edit = null;
+            } else {
+                const task = createTaskElement(taskText);
+                ul.appendChild(task);
+            }
+
+            input.value = "";
+            updateStats();
+        }
+
+        btn.addEventListener("click", addTask);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") addTask();
+        });
+
+        ul.addEventListener("click", (e) => {
+            const li = e.target.parentElement;
+
+            if (e.target.classList.contains("delButton")) {
+                li.remove();
+            }
+
+            if (e.target.classList.contains("editButton")) {
+                const span = li.querySelector(".taskText");
+                input.value = span.textContent;
+                input.focus();
+                edit = li;
+                btn.textContent = "Update";
+            }
+
+            updateStats();
+        });
+
+        ul.addEventListener("change", (e) => {
+            if (e.target.classList.contains("checkbox")) {
+                const span = e.target.parentElement.querySelector(".taskText");
+                span.classList.toggle("completed", e.target.checked);
+                updateStats();
+            }
+        });
+
+
+        updateStats();
+    </script>
+</body>
+
+</html>
