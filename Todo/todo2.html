@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Management 🧏🏻‍♂️</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-section {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #btn {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .no-tasks {
+            color: #666;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .checkbox {
+            margin-right: 10px;
+        }
+        .taskText {
+            flex-grow: 1;
+        }
+        .taskText.edited {
+            color: #666;
+            font-style: italic;
+            position: relative;
+        }
+        .taskText.edited::after {
+            content: " (edited)";
+            color: #999;
+            font-size: 0.8em;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #999;
+            margin: 0 10px;
+        }
+        .editButton, .delButton {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .editButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        .delButton {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body tabindex="0">
+    <div class="container">
+        <h1>📝 Task Manager</h1>
+
+        <div class="input-section">
+            <input type="text" id="input" placeholder="Add a new task..." />
+            <button id="btn">Add</button>
+        </div>
+
+        <div id="stats" class="stats">
+            <span>Total Tasks: <strong id="totalCount">0</strong></span>
+            <span>Completed: <strong id="completedCount">0</strong></span>
+        </div>
+
+        <p id="noTasks" class="no-tasks">No tasks yet. Add one above!</p>
+
+        <ul id="ul" class="task-list">
+            <!-- Task items will go here -->
+        </ul>
+    </div>
+
+    <script>
+        const input = document.querySelector("#input");
+        const totalCount = document.querySelector("#totalCount");
+        const completedCount = document.querySelector("#completedCount");
+        const ul = document.querySelector("#ul");
+        const noTasks = document.querySelector("#noTasks");
+        let currentlyEditing = null;
+
+        function updateStats() {
+            const completed = ul.querySelectorAll("input[type='checkbox']:checked").length;
+            totalCount.textContent = ul.children.length;
+            completedCount.textContent = completed;
+            noTasks.style.display = ul.children.length ? "none" : "block";
+        }
+
+        function createTaskElement(taskText, isEdited = false) {
+            const li = document.createElement("li");
+            const taskTextClass = isEdited ? 'taskText edited' : 'taskText';
+            const timestamp = new Date().toLocaleString();
+
+            li.innerHTML = `
+                <input type="checkbox" class="checkbox" />
+                <span class="${taskTextClass}">${taskText}</span>
+                <span class="timestamp">${timestamp}</span>
+                <button class="editButton">Edit</button>
+                <button class="delButton">Delete</button>
+            `;
+
+            return li;
+        }
+
+        function addTask() {
+            const taskText = input.value.trim();
+            
+            if (!taskText) {
+                const warning = createTaskElement("⚠️ Please enter a task!");
+                ul.appendChild(warning);
+                setTimeout(() => warning.remove(), 1200);
+                return;
+            }
+
+            if (currentlyEditing) {
+                // Update existing task
+                const span = currentlyEditing.querySelector(".taskText");
+                span.textContent = taskText;
+                span.classList.add("edited");
+                input.value = "";
+                currentlyEditing = null;
+                document.querySelector("#btn").textContent = "Add";
+            } else {
+                // Add new task
+                const task = createTaskElement(taskText);
+                ul.appendChild(task);
+                input.value = "";
+            }
+            
+            updateStats();
+        }
+
+        document.querySelector("#btn").addEventListener("click", addTask);
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") addTask();
+        });
+
+        ul.addEventListener("click", (e) => {
+            if (e.target.classList.contains("delButton")) {
+                e.target.parentElement.remove();
+                updateStats();
+            }
+
+            if (e.target.classList.contains("editButton")) {
+                const li = e.target.parentElement;
+                const span = li.querySelector(".taskText");
+                input.value = span.textContent.replace(" (edited)", "");
+                input.focus();
+                currentlyEditing = li;
+                document.querySelector("#btn").textContent = "Update";
+            }
+        });
+
+        ul.addEventListener("change", (e) => {
+            if (e.target.classList.contains("checkbox")) {
+                updateStats();
+            }
+        });
+
+        updateStats(); // Initial update
+    </script>
+</body>
+</html>
